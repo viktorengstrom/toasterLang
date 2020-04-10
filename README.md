@@ -1,2 +1,2 @@
-# existentialLang
-A micro language demonstrating the existence operators in the Meta Attack Language.
+# toasterLang
+A goofy micro language that demonstrates the existence operators of the Meta Attack Language.
