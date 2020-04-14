@@ -1,0 +1,68 @@
+// A goofy language for demonstrating the existence operators.
+
+#id: "org.toasterLang.viktorengstrom"
+#version: "1.0.0"
+
+category System {
+  asset Toaster {
+    
+    | attemptMaliciousToasting
+      user info: "A malicious agent tries to use the toaster for their own nefarious ends."
+      -> maliciousToasting
+
+    !E ifEmptyToastSlot
+      developer info: "At least 1 slot in the toaster must be empty to add more toast."
+      <- slots[FirstSlot].toast,
+         slots[SecondSlot].toast
+      -> maliciousToasting
+
+    & maliciousToasting {I}
+      user info: "A malicious agent used this toaster."
+      -> owner.pwned
+
+    | attemptToastSabotage
+      user info: "A malicious agent tries to sabotage the toasting process."
+      -> toastRemoval
+    
+    E ifFilledToastSlot
+      developer info: "At least 1 slot must be filled to remove toast."
+      <- slots[FirstSlot].toast,
+         slots[SecondSlot].toast
+      -> toastRemoval
+
+    & toastRemoval {I}
+      user info: "A malicious agent successfully removed toast."
+      -> slots.toast.remove,
+         owner.pwned
+  }
+
+  asset Owner
+    user info: "Game over. Your toaster was misused."
+  {
+    | pwned
+  }
+
+  abstract asset ToastSlot 
+    user info: "Container unit for one (1) piece of toast."
+    developer info: "Abstract since we want to specifically check both slots for demonstration purposes."
+  {
+  }
+
+  asset FirstSlot extends ToastSlot {
+
+  }
+
+  asset SecondSlot extends ToastSlot {
+    
+  }
+
+  asset Toast {
+    | remove {I}
+  }
+}
+
+associations {
+  Owner [owner] 1 <-- owns --> * [toasters] Toaster 
+  Toaster [toaster] 1 <-- hosts --> * [slots] ToastSlot 
+  ToastSlot [slot] 1 <-- toasts --> 0..1 [toast] Toast
+}
