@@ -57,7 +57,7 @@ category System {
   }
 
   asset Toast {
-    | remove {I}
+    | remove {I, A}
   }
 }
 
